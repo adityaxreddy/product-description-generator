@@ -76,4 +76,20 @@ class ProductDescriptionGenerator:
             tasks=self.tasks,  # Automatically created by the @task decorator
             process=Process.sequential,
             verbose=True,
+output_formatter=self.format_output
         )
+    
+    def format_output(self, output):
+        """Format the final output to separate product description and marketing materials"""
+    # Extract product description from the product_description_task output
+        product_description = next((task.output for task in self.tasks if task.id == "product_description_task"), "")
+    
+    # Extract marketing materials from the marketing_materials_task output
+        marketing_materials = next((task.output for task in self.tasks if task.id == "marketing_materials_task"), "")
+    
+    # Format the final output
+        formatted_output = f"""# {output.get('product_name', 'Product')} Description 
+        {product_description}
+        # Marketing Materials
+        {marketing_materials}"""
+        return formatted_output

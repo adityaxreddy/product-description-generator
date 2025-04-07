@@ -25,7 +25,7 @@ product_description_task:
 marketing_materials_task:
   description: >
     Based on the product description and keyword research, create supplementary marketing
-    materials for {product_name}. Develop 2-3 meta description options (under 160 characters),
+    materials for {product_name}. Develop 2-3 meta description options of 2-3 sentences long,
     3-4 social media post templates for different platforms, and a short email marketing
     snippet. Ensure all materials maintain consistent messaging and incorporate relevant
     keywords.
