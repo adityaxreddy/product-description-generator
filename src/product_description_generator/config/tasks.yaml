@@ -1,36 +1,39 @@
-keyword_research_task:
+retrieve_product_info_task:
   description: >
-    Research and identify the most valuable SEO keywords and phrases for {product_name}
-    in the {product_category} market targeting {target_audience}. Analyze search volume,
-    competition, and relevance to determine a prioritized list of primary and secondary
-    keywords. Consider seasonal trends and emerging search patterns.
+    Analyze the user query "{user_query}" to identify the product being discussed.
+    Retrieve relevant product information from storage, including product name,
+    category, features, specifications, target audience, and any available templates.
+    If multiple similar products exist, select the most relevant one based on the query.
   expected_output: >
-    A comprehensive list of 10-15 high-value keywords and phrases organized by priority,
-    with notes on search volume and competition. Include 2-3 long-tail keyword phrases
-    and recommendations for keyword placement in product descriptions.
+    A comprehensive JSON object containing all relevant product information, including
+    product name, category, key features, specifications, target audience, pricing,
+    and any applicable templates. The information should be structured and complete
+    enough to generate a detailed product description.
 
-product_description_task:
+generate_description_task:
   description: >
-    Using the keyword research provided and information about {product_name}, its
-    {key_features}, and {target_audience}, create a complete product description package.
-    This should include a main product description (300-500 words), 3-5 bullet points
-    highlighting key features, and a compelling product title that incorporates primary
-    keywords naturally.
+    Using the product information provided, generate a detailed and engaging product
+    description that highlights the key features, benefits, and unique selling points.
+    The description should be tailored to the target audience and incorporate relevant
+    SEO keywords. If a template is provided, use it as a guide while ensuring the
+    description remains original and compelling.
   expected_output: >
-    A markdown-formatted document containing an SEO-optimized product title, a compelling
-    main description that naturally incorporates priority keywords, and a bulleted list
-    of key features. The content should balance SEO requirements with persuasive marketing
-    language that appeals to the target audience.
+    A well-structured product description of 300-500 words that effectively communicates
+    the product's value proposition. The description should include a compelling headline,
+    an engaging introduction, detailed feature descriptions with benefits, and a strong
+    conclusion with a call-to-action. The content should be SEO-optimized and formatted
+    in markdown.
 
-marketing_materials_task:
+refine_description_task:
   description: >
-    Based on the product description and keyword research, create supplementary marketing
-    materials for {product_name}. Develop 2-3 meta description options of 2-3 sentences long,
-    3-4 social media post templates for different platforms, and a short email marketing
-    snippet. Ensure all materials maintain consistent messaging and incorporate relevant
-    keywords.
+    Review and refine the generated product description to enhance its effectiveness.
+    Focus on optimizing the tone to match the target audience, ensuring proper keyword
+    placement and density for SEO, strengthening the call-to-action, and improving
+    overall readability and persuasiveness. Maintain the original structure while
+    making targeted improvements.
   expected_output: >
-    A markdown-formatted collection of marketing materials including meta descriptions,
-    social media post templates (Twitter, Facebook, Instagram), and an email marketing
-    snippet. All content should be optimized for the appropriate platform while maintaining
-    consistent messaging and incorporating relevant keywords from the research.
+    A refined and polished product description that maintains the core information
+    while featuring improved tone, better keyword integration, stronger call-to-action,
+    and enhanced readability. The refinements should be subtle but impactful, elevating
+    the quality of the description without completely rewriting it. The final output
+    should be in markdown format.

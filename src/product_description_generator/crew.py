@@ -1,7 +1,10 @@
-from crewai_tools import SerperDevTool, WebsiteSearchTool
+from crewai_tools import SerperDevTool
 
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
+
+from product_description_generator.tools import GCSProductInfoTool
+from product_description_generator.utils import format_output
 
 
 @CrewBase
@@ -12,60 +15,60 @@ class ProductDescriptionGenerator:
     tasks_config = "config/tasks.yaml"
 
     @agent
-    def seo_researcher(self) -> Agent:
+    def root_agent(self) -> Agent:
         return Agent(
-            config=self.agents_config["seo_researcher"],
-            tools=[SerperDevTool(), WebsiteSearchTool()],
+            config=self.agents_config["root_agent"],
+            tools=[GCSProductInfoTool(), SerperDevTool()],
             allow_delegation=True,
             verbose=True,
         )
 
     @agent
-    def content_writer(self) -> Agent:
+    def product_description_agent(self) -> Agent:
         return Agent(
-            config=self.agents_config["content_writer"],
+            config=self.agents_config["product_description_agent"],
             tools=[SerperDevTool()],
             allow_delegation=True,
             verbose=True,
         )
 
     @agent
-    def marketing_specialist(self) -> Agent:
+    def refinement_agent(self) -> Agent:
         return Agent(
-            config=self.agents_config["marketing_specialist"],
+            config=self.agents_config["refinement_agent"],
             tools=[SerperDevTool()],
             allow_delegation=False,
             verbose=True,
         )
 
     @task
-    def keyword_research_task(self) -> Task:
+    def retrieve_product_info_task(self) -> Task:
         return Task(
-            config=self.tasks_config["keyword_research_task"],
-            tools=[SerperDevTool(), WebsiteSearchTool()],
+            config=self.tasks_config["retrieve_product_info_task"],
+            tools=[GCSProductInfoTool(), SerperDevTool()],
             async_execution=False,
-            agent=self.seo_researcher(),
+            agent=self.root_agent(),
         )
 
     @task
-    def product_description_task(self) -> Task:
+    def generate_description_task(self) -> Task:
         return Task(
-            config=self.tasks_config["product_description_task"],
+            config=self.tasks_config["generate_description_task"],
             tools=[SerperDevTool()],
-            agent=self.content_writer(),
+            agent=self.product_description_agent(),
             async_execution=False,
-            context=[self.keyword_research_task()],
+            context=[self.retrieve_product_info_task()],
         )
 
     @task
-    def marketing_materials_task(self) -> Task:
+    def refine_description_task(self) -> Task:
         return Task(
-            config=self.tasks_config["marketing_materials_task"],
+            config=self.tasks_config["refine_description_task"],
             tools=[SerperDevTool()],
-            agent=self.marketing_specialist(),
+            agent=self.refinement_agent(),
             async_execution=False,
-            context=[self.keyword_research_task(), self.product_description_task()],
-            output_file="product_marketing_package.md",
+            context=[self.retrieve_product_info_task(), self.generate_description_task()],
+            output_file="product_description.md",
         )
 
     @crew
@@ -73,23 +76,41 @@ class ProductDescriptionGenerator:
         """Creates the Product Description Generator"""
         return Crew(
             agents=self.agents,  # Automatically created by the @agent decorator
-            tasks=self.tasks,  # Automatically created by the @task decorator
+            tasks=self.tasks,    # Automatically created by the @task decorator
             process=Process.sequential,
             verbose=True,
-output_formatter=self.format_output
+            output_formatter=self.format_output
         )
     
     def format_output(self, output):
         """Format the final output to separate product description and marketing materials"""
-    # Extract product description from the product_description_task output
-        product_description = next((task.output for task in self.tasks if task.id == "product_description_task"), "")
-    
-    # Extract marketing materials from the marketing_materials_task output
-        marketing_materials = next((task.output for task in self.tasks if task.id == "marketing_materials_task"), "")
-    
-    # Format the final output
-        formatted_output = f"""# {output.get('product_name', 'Product')} Description 
-        {product_description}
-        # Marketing Materials
-        {marketing_materials}"""
+        # Extract product info from the first task
+        product_info_task = next((task for task in self.tasks if task.id == "retrieve_product_info_task"), None)
+        product_info_str = product_info_task.output if product_info_task else "{}"
+        
+        # Extract product description from the second task
+        description_task = next((task for task in self.tasks if task.id == "generate_description_task"), None)
+        description = description_task.output if description_task else ""
+        
+        # Extract refined description from the third task
+        refined_task = next((task for task in self.tasks if task.id == "refine_description_task"), None)
+        refined_description = refined_task.output if refined_task else ""
+        
+        # Parse product info
+        try:
+            import json
+            product_info = json.loads(product_info_str)
+        except:
+            product_info = {"product_name": output.get("user_query", "Product")}
+        
+        # Format the final output
+        product_name = product_info.get("product_name", "Product")
+        formatted_output = f"""# {product_name} Description
+
+        {refined_description}
+
+        ---
+        *This description was generated based on product information and refined for optimal engagement and SEO performance.*
+
+        """
         return formatted_output
