@@ -1,0 +1,36 @@
+keyword_research_task:
+  description: >
+    Research and identify the most valuable SEO keywords and phrases for {product_name}
+    in the {product_category} market targeting {target_audience}. Analyze search volume,
+    competition, and relevance to determine a prioritized list of primary and secondary
+    keywords. Consider seasonal trends and emerging search patterns.
+  expected_output: >
+    A comprehensive list of 10-15 high-value keywords and phrases organized by priority,
+    with notes on search volume and competition. Include 2-3 long-tail keyword phrases
+    and recommendations for keyword placement in product descriptions.
+
+product_description_task:
+  description: >
+    Using the keyword research provided and information about {product_name}, its
+    {key_features}, and {target_audience}, create a complete product description package.
+    This should include a main product description (300-500 words), 3-5 bullet points
+    highlighting key features, and a compelling product title that incorporates primary
+    keywords naturally.
+  expected_output: >
+    A markdown-formatted document containing an SEO-optimized product title, a compelling
+    main description that naturally incorporates priority keywords, and a bulleted list
+    of key features. The content should balance SEO requirements with persuasive marketing
+    language that appeals to the target audience.
+
+marketing_materials_task:
+  description: >
+    Based on the product description and keyword research, create supplementary marketing
+    materials for {product_name}. Develop 2-3 meta description options (under 160 characters),
+    3-4 social media post templates for different platforms, and a short email marketing
+    snippet. Ensure all materials maintain consistent messaging and incorporate relevant
+    keywords.
+  expected_output: >
+    A markdown-formatted collection of marketing materials including meta descriptions,
+    social media post templates (Twitter, Facebook, Instagram), and an email marketing
+    snippet. All content should be optimized for the appropriate platform while maintaining
+    consistent messaging and incorporating relevant keywords from the research.
